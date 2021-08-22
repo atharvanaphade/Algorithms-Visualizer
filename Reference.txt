@@ -1,0 +1,12 @@
+Learn JavaFX
+
+JavaFX Project Structure : -
+    
+    1. Scene Graph - Lowest level of the hierarchy, it is a collecion of various nodes.
+
+        Stage -> Scene -> Scene Graph
+                            |
+                            | -> Root Node
+                                  |
+                                  | -> Branch Nodes
+                                  | -> Leaf Nodes
