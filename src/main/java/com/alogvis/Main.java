@@ -1,9 +1,11 @@
 package com.alogvis;
 
 import java.util.ArrayList;
+import java.util.Random;
+
+import org.w3c.dom.css.Rect;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -15,73 +17,58 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-class InputTextField {
-    public static TextField tf = new TextField();
-    public static Label l = new Label("Enter a Value");
+public class Main extends Application {
+    private final int maxHeight = 540;
+    private static ArrayList<Rectangle> bars = new ArrayList<Rectangle>();
+    private static ArrayList<Rectangle> sortedBars = new ArrayList<Rectangle>();
+    private static int size;
+    private static TextField tf = new TextField();
+    private static Label l = new Label("Enter a Value");
+    private static Button setBtn = new Button("Set");
+    private static Button sortBtn = new Button("Sort");
+    
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Group group = new Group();
+        Group barsGroup = new Group();
 
-    public Integer Value() {
-        if(tf.getText().isEmpty()){
-            return 0;
-        }
-        return Integer.parseInt(tf.getText());
-    }
-
-    public static Group InputBox(double x, double y, double width, double height) {
-
-        Group g = new Group();
-
+        // Input Box shit 
         tf.setPrefColumnCount(7);
-        tf.setLayoutX(x);
-        tf.setLayoutY(y);
-        tf.setPrefWidth(width);
-        tf.setPrefHeight(height);
+        tf.setLayoutX(580);
+        tf.setLayoutY(50);
+        tf.setPrefWidth(100);
+        tf.setPrefHeight(20);
 
-        l.setLayoutX(x);
-        l.setLayoutY(y + 40);
+        l.setLayoutX(580);
+        l.setLayoutY(50 + 40);
 
-        Button btn = new Button("Set");
-        btn.setLayoutX(x+120);
-        btn.setLayoutY(y+60);
-
+        setBtn.setLayoutX(580 + 120);
+        setBtn.setLayoutY(50 + 60);
+        sortBtn.setLayoutX(580 + 80);
+        sortBtn.setLayoutY(50 + 30);
         EventHandler<ActionEvent> setValueEvent = new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
                 l.setText(tf.getText());
+                size = Integer.parseInt(tf.getText());
+                System.out.println(size);
             }
         };
-
-        btn.setOnAction(setValueEvent);
-
-        g.getChildren().addAll(tf, l, btn);
-
-        return g;
-    }
-}
-
-public class Main extends Application {
-    private final int maxHeight = 540;
-    private static ArrayList<Rectangle> bars = new ArrayList<Rectangle>();
-    
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Rectangle rect = new Rectangle(10, 60);
-        rect.setX(1270);
-        rect.setY(580);
-        Group group = new Group();
-        group.getChildren().add(rect);
-        group.getChildren().addAll(InputTextField.InputBox(580, 50, 100, 20));
-
-        ChangeListener<String> textFieldListener = (obs, oV, nV) -> {
-            if(nV.isEmpty()){
-                InputTextField.tf.setText("0");
-            }
-            else{
-                InputTextField.tf.setText(InputTextField.tf.getText());
+        setBtn.setOnAction(setValueEvent);
+        EventHandler<ActionEvent> sortEvent = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                sortedBars = Algorithms.BubbleSort(bars);
+                barsGroup.getChildren().remove(bars);
+                barsGroup.getChildren().addAll(sortedBars);
             }
         };
-        InputTextField.tf.textProperty().addListener(textFieldListener);
-        textFieldListener.changed(null, null, InputTextField.tf.getText());
-        System.out.println(textFieldListener.toString());
+        sortBtn.setOnAction(sortEvent);
+        group.getChildren().addAll(tf, l, setBtn, sortBtn);
+        bars = Algorithms.RandomArrayGenerator(size);
+        barsGroup.getChildren().addAll(bars);
+        barsGroup.setRotate(180);
+        group.getChildren().add(barsGroup);
         Scene scene = new Scene(group, 1280, 640, Color.GRAY);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -89,5 +76,59 @@ public class Main extends Application {
 
     public static void main (String[] args) {
         launch(args);
+    }
+}
+
+final class Algorithms {
+    public static ArrayList<Rectangle> RandomArrayGenerator(int n) {
+        Random rand = new Random();
+        double x = 540, y = 0;
+        n = 4;
+        ArrayList<Rectangle> bars = new ArrayList<Rectangle>(n);
+        for(int i=0; i<n; i++){
+            Rectangle temp = new Rectangle();
+            int randomGenerated = rand.nextInt(480);
+            temp.setWidth(10);
+            temp.setHeight(randomGenerated);
+            temp.setX(x);
+            temp.setY(640 - 480);
+            x -= 10;
+            bars.add(temp);
+        }
+        return bars;
+    }
+
+    public static ArrayList<Rectangle> BubbleSort(ArrayList<Rectangle> array) {
+        // for(Rectangle i : array) {
+        //     System.out.print(i.getHeight() + " ");
+        // }
+        // System.out.println(array.size());
+        for (int i = 0; i < array.size() - 1; i++) {
+            for (int j = 0; j < array.size() - i - 1; j++) {
+                if (array.get(j).getHeight() > array.get(j+1).getHeight()) {
+                    Rectangle temp = new Rectangle();
+                    temp.setX(array.get(j).getX());
+                    temp.setY(array.get(j).getY());
+                    temp.setHeight(array.get(j).getHeight());
+                    temp.setWidth(array.get(j).getWidth());
+
+                    array.get(j).setX(array.get(j + 1).getX());
+                    array.get(j).setY(array.get(j + 1).getY());
+                    array.get(j).setHeight(array.get(j + 1).getHeight());
+                    array.get(j).setWidth(array.get(j + 1).getWidth());
+                    
+                    array.get(j + 1).setX(temp.getX());
+                    array.get(j + 1).setY(temp.getY());
+                    array.get(j + 1).setHeight(temp.getHeight());
+                    array.get(j + 1).setWidth(temp.getWidth());
+                    
+                }
+            }
+        }
+        ArrayList<Rectangle> ret = new ArrayList<>();
+        for (Rectangle i : array) {
+            ret.add(i);
+        }
+        return ret;
     }
 }
