@@ -3,8 +3,6 @@ package com.alogvis;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.w3c.dom.css.Rect;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -55,21 +53,23 @@ public class Main extends Application {
             }
         };
         setBtn.setOnAction(setValueEvent);
-        EventHandler<ActionEvent> sortEvent = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                sortedBars = Algorithms.BubbleSort(bars);
-                barsGroup.getChildren().remove(bars);
-                barsGroup.getChildren().addAll(sortedBars);
-            }
-        };
-        sortBtn.setOnAction(sortEvent);
         group.getChildren().addAll(tf, l, setBtn, sortBtn);
         bars = Algorithms.RandomArrayGenerator(size);
         barsGroup.getChildren().addAll(bars);
         barsGroup.setRotate(180);
         group.getChildren().add(barsGroup);
         Scene scene = new Scene(group, 1280, 640, Color.GRAY);
+        EventHandler<ActionEvent> sortEvent = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                sortedBars = Algorithms.BubbleSort(bars);
+                group.getChildren().remove(barsGroup);
+                barsGroup.getChildren().remove(bars);
+                barsGroup.getChildren().addAll(sortedBars);
+                group.getChildren().addAll(barsGroup);
+            }
+        };
+        sortBtn.setOnAction(sortEvent);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

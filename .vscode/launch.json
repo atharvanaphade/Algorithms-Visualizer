@@ -6,6 +6,14 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Test",
+            "request": "launch",
+            "vmArgs": "--module-path /Users/atharvanaphade/Downloads/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
+            "mainClass": "com.alogvis.Test",
+            "projectName": "algorithmsvisualizer"
+        },
+        {
+            "type": "java",
             "name": "Launch Main",
             "request": "launch",
             "vmArgs": "--module-path /Users/atharvanaphade/Downloads/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml",
