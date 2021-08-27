@@ -1,19 +1,29 @@
 package com.alogvis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
+// Window Size = 1280 x 720
 
 public class Main extends Application {
     private final int maxHeight = 540;
@@ -24,52 +34,20 @@ public class Main extends Application {
     private static Label l = new Label("Enter a Value");
     private static Button setBtn = new Button("Set");
     private static Button sortBtn = new Button("Sort");
+    private static ObservableList<Data<String, Number>> newBars;
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Group group = new Group();
-        Group barsGroup = new Group();
+        AnimationHandler animation = new AnimationHandler();
+        animation.setStyle("-fx-background-color: #1c1c1c");
 
-        // Input Box shit 
-        tf.setPrefColumnCount(7);
-        tf.setLayoutX(580);
-        tf.setLayoutY(50);
-        tf.setPrefWidth(100);
-        tf.setPrefHeight(20);
+        Scene scene = new Scene(
+            animation,
+            1280,
+            720
+        );
 
-        l.setLayoutX(580);
-        l.setLayoutY(50 + 40);
-
-        setBtn.setLayoutX(580 + 120);
-        setBtn.setLayoutY(50 + 60);
-        sortBtn.setLayoutX(580 + 80);
-        sortBtn.setLayoutY(50 + 30);
-        EventHandler<ActionEvent> setValueEvent = new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent event) {
-                l.setText(tf.getText());
-                size = Integer.parseInt(tf.getText());
-                System.out.println(size);
-            }
-        };
-        setBtn.setOnAction(setValueEvent);
-        group.getChildren().addAll(tf, l, setBtn, sortBtn);
-        bars = Algorithms.RandomArrayGenerator(size);
-        barsGroup.getChildren().addAll(bars);
-        barsGroup.setRotate(180);
-        group.getChildren().add(barsGroup);
-        Scene scene = new Scene(group, 1280, 640, Color.GRAY);
-        EventHandler<ActionEvent> sortEvent = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                sortedBars = Algorithms.BubbleSort(bars);
-                group.getChildren().remove(barsGroup);
-                barsGroup.getChildren().remove(bars);
-                barsGroup.getChildren().addAll(sortedBars);
-                group.getChildren().addAll(barsGroup);
-            }
-        };
-        sortBtn.setOnAction(sortEvent);
+        primaryStage.setTitle("Algorithms Visualizer");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -130,5 +108,66 @@ final class Algorithms {
             ret.add(i);
         }
         return ret;
+    }
+}
+
+class AnimationHandler extends BorderPane {
+    private Pane pane;
+    private HBox buttons;
+    
+    private Button sortButton;
+    private Button randomizeButton;
+
+    private Node[] nodes;
+
+    public AnimationHandler () {
+        this.pane = new Pane();
+        this.buttons = new HBox();
+
+        this.setCenter(pane);
+        this.setBottom(buttons);
+
+        this.sortButton = new Button("Sort");
+        this.randomizeButton = new Button("Randomize");
+
+        this.nodes = RandomNodes.randomNodes(50);
+
+        buttons.getChildren().addAll(sortButton, randomizeButton);
+        buttons.setAlignment(Pos.CENTER);
+
+        for (javafx.scene.Node nn : buttons.getChildren()) {
+            buttons.setMargin(nn, new Insets(5, 5, 20, 5));
+        }
+
+        pane.getChildren().addAll(Arrays.asList(nodes));
+
+        randomizeButton.setOnAction((event) -> {
+            pane.getChildren().clear();
+
+            nodes = RandomNodes.randomNodes(50);
+            pane.getChildren().addAll(Arrays.asList(nodes));
+        });
+    }
+}
+
+class RandomNodes {
+    public RandomNodes () {}
+
+    public static Node[] randomNodes (int n) {
+        Node[] arr = new Node[n];
+        Random r = new Random();
+
+        for (int i = 0 ; i < arr.length; i++) {
+            arr[i] = new Node(1 + r.nextInt(arr.length));
+            arr[i].setX(i * (1280 / arr.length));
+            arr[i].setFill(Color.DARKGREEN);
+            setNodeDim(arr[i], arr.length);
+        }
+        return arr;
+    }
+
+    public static void setNodeDim (Node node, int n) {
+        node.setWidth((double)(1280 / n) - (double)10);
+        node.setHeight((double)((720 - 100) / n) * (double)node.getValue());
     }
 }
