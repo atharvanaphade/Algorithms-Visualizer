@@ -1,0 +1,5 @@
+Algorothm Visualizer
+
+    -> Node - The common class containing the recatnges for the array visualizer.
+    -> Sorting Utility - The interface which all sorts will implement, which has methods for swapping and creating a colored Node
+    -> Main Class -> It will use the sorting utility interface and all sorts will be implemented through that, by creating a start transition/sort method.
