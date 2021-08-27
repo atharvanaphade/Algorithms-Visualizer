@@ -160,7 +160,7 @@ class RandomNodes {
         for (int i = 0 ; i < arr.length; i++) {
             arr[i] = new Node(1 + r.nextInt(arr.length));
             arr[i].setX(i * (1280 / arr.length));
-            arr[i].setFill(Color.DARKGREEN);
+            arr[i].setFill(Color.AQUA);
             setNodeDim(arr[i], arr.length);
         }
         return arr;
