@@ -1,6 +1,8 @@
+com/alogvis/AnimationHandler.class
+com/alogvis/Node.class
+com/alogvis/Sorts/BubbleSort.class
 com/alogvis/HelloFX.class
 com/alogvis/Main.class
-com/alogvis/Main$1.class
 com/alogvis/Test.class
-com/alogvis/Algorithms.class
-com/alogvis/Main$2.class
+com/alogvis/RandomNodes.class
+com/alogvis/Sorts/SortingUtility.class

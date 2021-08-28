@@ -1,8 +1,5 @@
 package com.alogvis;
 
-import java.io.*;
-import java.util.*;
-
 import javafx.animation.TranslateTransition;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
